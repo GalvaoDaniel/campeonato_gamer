@@ -1,4 +1,5 @@
 export default class Competidor {
+    id: string;
     primeiroNome: string;
     segundoNome: string;
     email: string;
@@ -11,6 +12,7 @@ export default class Competidor {
     UF: string;
 
     constructor(
+        id: string,
         primeiroNome: string,
         segundoNome: string,
         email: string,
@@ -22,6 +24,7 @@ export default class Competidor {
         cidade: string,
         UF: string
     ) {
+        this.id = id;
         this.primeiroNome = primeiroNome;
         this.segundoNome = segundoNome;
         this.email = email;
