@@ -77,23 +77,23 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     data.id = uuid.v4().toString();
     //console.log(data);
     try{
-      const responseData =  await AsyncStorage.getItem('@crud_form:usuario')
+      const responseData =  await AsyncStorage.getItem('@crud_form:competidor')
       const dbData = responseData ? JSON.parse(responseData!) : [];
       console.log(dbData);
       const previewData = [...dbData, data];
 
-      await AsyncStorage.setItem('@crud_form:usuario', JSON.stringify(previewData))
+      await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(previewData))
       reset();
-      Toast.showSuccess("Usuário registrado com sucesso")
+      Toast.showSuccess("Competidor registrado com sucesso")
     }catch (e){
-      Toast.showSuccess("Erro ao registrar usuário "+e)
+      Toast.showSuccess("Erro ao registrar competidor "+e)
     }
   }
 
   async function handlerSearcher(id:string) {
     try{
       setLoading(true)
-      const responseData =  await AsyncStorage.getItem('@crud_form:usuario')
+      const responseData =  await AsyncStorage.getItem('@crud_form:competidor')
       const dbData: FormDataProps[] = responseData? JSON.parse(responseData) : [];
 
       const itemEncontrado = dbData?.find(item => item.id === id)
@@ -116,7 +116,7 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     async function handlerAlterRegister(data:FormDataProps){
         try{
             setLoading(true)
-            const reponseData =  await AsyncStorage.getItem('@crud_form:usuario');
+            const reponseData =  await AsyncStorage.getItem('@crud_form:competidor');
             const dbData: FormDataProps[] = reponseData? JSON.parse(reponseData) : [];
     
             const indexRemove = dbData?.findIndex(item => item.id === data.id)
@@ -124,7 +124,7 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
             if(indexRemove !== -1){
                 dbData.splice(indexRemove,1);
                 const previeData = [...dbData, data];
-                await AsyncStorage.setItem('@crud_form:usuario', JSON.stringify(previeData));
+                await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(previeData));
                 Toast.showSuccess("Usuário alterado com sucesso");
                 setLoading(false);
                 setSearchID(false);
@@ -147,14 +147,14 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
   async function HandleDelete(data:FormDataProps){
     try{
       setLoading(true)
-      const reponseData =  await AsyncStorage.getItem('@crud_form:usuario');
+      const reponseData =  await AsyncStorage.getItem('@crud_form:competidor');
       const dbData: FormDataProps[] = reponseData? JSON.parse(reponseData) : [];
  
       const indexRemove = dbData?.findIndex(item => item.id === data.id)
      
       if(indexRemove !== -1){
         dbData.splice(indexRemove,1);
-        await AsyncStorage.setItem('@crud_form:usuario', JSON.stringify(dbData));
+        await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(dbData));
         Toast.showSuccess("Usuário excluído com sucesso");
         setShowDeleteDialog(false);
         setLoading(false);

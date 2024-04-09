@@ -1,12 +1,40 @@
 import { Avatar, Box, HStack, Heading, ScrollView, StatusBar, VStack , Text, Spacer, Input } from "native-base";
 import { FlatList, View } from "react-native";
 import Competidor from "../../model/competidor";
-import { Container, Content, Header } from "./style";
-
 import headerIMG from "../../assets/header_image.jpg";
-import { SearchInput } from "../../components/searchInput";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { styles, Container, Content, Header } from './style';
+import { Card, CardProps } from '../../components/card';
 
-export default function Home() {
+type Props = {
+    navigation: any
+  }
+
+export const Home = ({ navigation }: Props) => {
+    const [data, setData] = useState<CardProps[]>([]);
+
+    useFocusEffect(useCallback(() => {
+        handlerFetchData()
+    }, []))
+    
+    function handleEdit(id: string) {
+        navigation.navigate('Usuario', {id: id})
+    }
+
+
+    async function handlerFetchData() {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@crud_form:competidor')
+            const data = jsonValue ? JSON.parse(jsonValue) : [];
+            setData(data);
+            return jsonValue
+        }catch(error) {
+            console.log(error);
+        }
+    }
+
     let competidores: Competidor[] = [
         {
             "id": "1",
@@ -49,56 +77,6 @@ export default function Home() {
         }
     ];
 
-    const data = [{
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-        fullName: "Aafreen Khan",
-        timeStamp: "12:47 PM",
-        recentText: "Good Day!",
-        avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-      }, {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-        fullName: "Sujitha Mathur",
-        timeStamp: "11:11 PM",
-        recentText: "Cheer up, there!",
-        avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU"
-      }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        fullName: "Anci Barroco",
-        timeStamp: "6:22 PM",
-        recentText: "Good Day!",
-        avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-      }, {
-        id: "68694a0f-3da1-431f-bd56-142371e29d72",
-        fullName: "Aniket Kumar",
-        timeStamp: "8:56 PM",
-        recentText: "All the best",
-        avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
-      }, {
-        id: "28694a0f-3da1-471f-bd96-142456e29d72",
-        fullName: "Kiara",
-        timeStamp: "12:47 PM",
-        recentText: "I will call today.",
-        avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU"
-      },{
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb283k",
-        fullName: "Aafreen Khan",
-        timeStamp: "12:47 PM",
-        recentText: "Good Day!",
-        avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-      }, {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f38",
-        fullName: "Sujitha Mathur",
-        timeStamp: "11:11 PM",
-        recentText: "Cheer up, there!",
-        avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU"
-      }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d16",
-        fullName: "Anci Barroco",
-        timeStamp: "6:22 PM",
-        recentText: "Good Day!",
-        avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
-      }];
-
     return (
         <>
 
@@ -109,7 +87,24 @@ export default function Home() {
             <Heading fontSize="xl" p="4" pb="3">
                 <Text>Gamers</Text>
             </Heading>
-            <FlatList data={competidores} renderItem={({item}) => 
+
+            <View style={styles.container}>
+                <FlatList 
+                    data={competidores}
+                    keyExtractor={item=>item.id}
+                    style={styles.list}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({item}) => 
+                        <Card 
+                            data={item}
+                            onPress={() => handleEdit(item.id)}
+                        />
+                    }
+                />
+            </View>
+
+
+            {/* <FlatList data={competidores} renderItem={({item}) => 
                 <Box borderWidth="1" _dark={{ borderColor: "muted.50" }} borderColor="muted.800" pl={["0", "4"]} pr={["0", "5"]} py="2" mb="3">
                     <HStack space={[2, 3]} justifyContent="space-between">
                         <VStack>
@@ -133,7 +128,7 @@ export default function Home() {
                             Edit
                         </Avatar>
                     </HStack>
-                </Box>} keyExtractor={item => item.id} />
+                </Box>} keyExtractor={item => item.id} /> */}
                 
         </>
     );
