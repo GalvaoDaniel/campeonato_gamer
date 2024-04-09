@@ -20,7 +20,7 @@ export const Home = ({ navigation }: Props) => {
     }, []))
     
     function handleEdit(id: string) {
-        navigation.navigate('Usuario', {id: id})
+        navigation.navigate('Competidor', {id: id})
     }
 
 
@@ -35,48 +35,6 @@ export const Home = ({ navigation }: Props) => {
         }
     }
 
-    let competidores: Competidor[] = [
-        {
-            "id": "1",
-            "primeiroNome": "Nome 1",
-            "segundoNome": "sobrenome 1",
-            "email": "email1@email.com",
-            "telefone": "84999993333",
-            "cep": "cep",
-            "rua": "rua1",
-            "numero": "11111",
-            "bairro": "bairro1",
-            "cidade": "cidade1",
-            "UF": "UF1"
-        },
-        {
-            "id": "2",
-            "primeiroNome": "Nome 2",
-            "segundoNome": "sobrenome 2",
-            "email": "email2@email.com",
-            "telefone": "84999992222",
-            "cep": "cep",
-            "rua": "rua2",
-            "numero": "22222",
-            "bairro": "bairro2",
-            "cidade": "cidade2",
-            "UF": "UF2"
-        },
-        {
-            "id": "3",
-            "primeiroNome": "Nome 3",
-            "segundoNome": "sobrenome 3",
-            "email": "email3@email.com",
-            "telefone": "84999993333",
-            "cep": "cep",
-            "rua": "rua3",
-            "numero": "33333",
-            "bairro": "bairro3",
-            "cidade": "cidade3",
-            "UF": "UF3"
-        }
-    ];
-
     return (
         <>
 
@@ -90,7 +48,7 @@ export const Home = ({ navigation }: Props) => {
 
             <View style={styles.container}>
                 <FlatList 
-                    data={competidores}
+                    data={data}
                     keyExtractor={item=>item.id}
                     style={styles.list}
                     contentContainerStyle={styles.listContent}

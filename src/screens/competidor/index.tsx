@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Center,  HStack,  Heading, Modal, VStack } from "native-base";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import { RootTabParamList } from '../../routes';
 import { DeleteItemDialog } from '../../components/deleteItemDialog';
 import { Button } from '../../components/button';
 import { Input } from '../../components/input';
+import { useFocusEffect } from '@react-navigation/native';
 
 type FormDataProps = {
   id: any
@@ -54,7 +55,11 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isEditing = !!route?.params?.id;
 
-  useEffect(() => {
+  // useFocusEffect(() => {
+  //   reset();
+  // })
+
+  useLayoutEffect(() => {
     if(isEditing) {
       handlerSearcher(route.params.id)
     }else {
@@ -65,7 +70,7 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     return () => setLoading(true);
   }, [route, isEditing])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (route?.params?.id) handlerSearcher(route.params.id)
     else {
       reset();
@@ -84,6 +89,7 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
 
       await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(previewData))
       reset();
+      navigateHome();
       Toast.showSuccess("Competidor registrado com sucesso")
     }catch (e){
       Toast.showSuccess("Erro ao registrar competidor "+e)
@@ -113,40 +119,40 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     }
   }
 
-    async function handlerAlterRegister(data:FormDataProps){
-        try{
-            setLoading(true)
-            const reponseData =  await AsyncStorage.getItem('@crud_form:competidor');
-            const dbData: FormDataProps[] = reponseData? JSON.parse(reponseData) : [];
-    
-            const indexRemove = dbData?.findIndex(item => item.id === data.id)
-        
-            if(indexRemove !== -1){
-                dbData.splice(indexRemove,1);
-                const previeData = [...dbData, data];
-                await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(previeData));
-                Toast.showSuccess("Usuário alterado com sucesso");
-                setLoading(false);
-                setSearchID(false);
-                reset();
-                handleList();
-            }else{
-                Toast.show('Registro não localizado!')
-            }
- 
-        }catch(e){
-            setLoading(false);
-            console.log(e);
-        }
+  async function handlerAlterRegister(data:FormDataProps){
+    try{
+      setLoading(true)
+      const reponseData =  await AsyncStorage.getItem('@crud_form:competidor');
+      const dbData: FormDataProps[] = reponseData? JSON.parse(reponseData) : [];
+
+      const indexRemove = dbData?.findIndex(item => item.id === data.id)
+  
+      if(indexRemove !== -1){
+        dbData.splice(indexRemove,1);
+        const previeData = [...dbData, data];
+        await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(previeData));
+        Toast.showSuccess("Usuário alterado com sucesso");
+        setLoading(false);
+        setSearchID(false);
+        reset();
+        navigateHome();
+      }else{
+        Toast.show('Registro não localizado!')
+      }
+
+    }catch(e){
+        setLoading(false);
+        console.log(e);
     }
+  }
  
-  async function handleList(){
+  async function navigateHome(){
     navigation.navigate('Home');
   }
 
-  async function HandleDelete(data:FormDataProps){
+  async function handleDelete(data:FormDataProps){
     try{
-      setLoading(true)
+      setLoading(true);
       const reponseData =  await AsyncStorage.getItem('@crud_form:competidor');
       const dbData: FormDataProps[] = reponseData? JSON.parse(reponseData) : [];
  
@@ -160,7 +166,7 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
         setLoading(false);
         setSearchID(false);
         reset();
-        handleList();
+        navigateHome();
       }else{
         Toast.show('Registro não localizado!')
       }
@@ -239,7 +245,6 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
             <Input
               placeholder='CEP'
               onChangeText={onChange}
-              secureTextEntry
               errorMessage={errors.cep?.message}
               value={value}
             />
@@ -312,12 +317,12 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
           />
            {searchId ? (
             <VStack>
-            <HStack>
-              <Button rounded="md" shadow={3} title='Alterar' color='#F48B20' onPress={handleSubmit(handlerAlterRegister)} />
-            </HStack>
-            <HStack paddingTop={5}>
-              <Button rounded="md" shadow={3} title='Excluir' color='#CC0707' onPress={() => setShowDeleteDialog(true)} />
-            </HStack>
+                <HStack>
+                  <Button rounded="md" shadow={3} title='Alterar' color='#F48B20' onPress={handleSubmit(handlerAlterRegister)} />
+                </HStack>
+                <HStack paddingTop={5}>
+                  <Button rounded="md" shadow={3} title='Excluir' color='#CC0707' onPress={() => setShowDeleteDialog(true)} />
+                </HStack>
             </VStack>
           ) : (
             <Button title='Cadastrar' color='green.700' onPress={handleSubmit(handlerRegister)} />
@@ -328,7 +333,7 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
         <DeleteItemDialog
             isVisible = {showDeleteDialog}
             onCancel={()=> setShowDeleteDialog(false)}
-            onConfirm={handleSubmit(HandleDelete)}
+            onConfirm={handleSubmit(handleDelete)}
         />
       </Modal>
     </KeyboardAwareScrollView>
