@@ -39,6 +39,17 @@ export function Card({ data, onPress }: Props) {
         </View>
       </View>
 
+      <View style={styles.content}>
+        <View>
+        <Text style={styles.telefone}>
+            {data.telefone}
+          </Text>
+          <Text style={styles.cidade}>
+            {data.cidade}
+          </Text>
+        </View>
+      </View>
+
       <TouchableOpacity
         style={styles.button}
         onPress={onPress}

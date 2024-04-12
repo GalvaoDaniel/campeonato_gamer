@@ -1,11 +1,15 @@
-import styled from "styled-components/native";
+import { StyleSheet } from 'react-native';
 
-export const Container = styled.TextInput`
-    width: 95%;
-    height: 54px;
-    margin-bottom: 16px;
-
-    background-color: white;
-    color: black;
-
-`;
+export const styles = StyleSheet.create({
+  button: {
+    height: 50,
+    width: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderLeftWidth: 1,
+    borderLeftColor: '#E3E3E3',
+  },
+  view: {
+    flexDirection: "row"
+  }
+});

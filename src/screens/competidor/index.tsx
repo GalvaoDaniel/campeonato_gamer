@@ -14,6 +14,9 @@ import { DeleteItemDialog } from '../../components/deleteItemDialog';
 import { Button } from '../../components/button';
 import { Input } from '../../components/input';
 import { useFocusEffect } from '@react-navigation/native';
+import { SearchInput } from '../../components/searchInput';
+import { CepController } from '../../controller/cepController';
+import Endereco from '../../model/endereco';
 
 type FormDataProps = {
   id: any
@@ -46,18 +49,16 @@ type CompetidorRouteProp = BottomTabScreenProps<RootTabParamList, 'Competidor'>
 
 export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
 
-  const {control, handleSubmit, reset, setValue, formState: {errors}}  = useForm<FormDataProps>({
+  const {control, handleSubmit, reset, setValue, register, getValues, watch, formState: {errors}}  = useForm<FormDataProps>({
       resolver: yupResolver(schemaRegister) as any
   });
 
+  const watchCep = watch("cep");
+  const [endereco, setEndereco] = useState(new Endereco("", "", "", "", ""));
   const [loading, setLoading] = useState(true);
   const [searchId, setSearchID] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isEditing = !!route?.params?.id;
-
-  // useFocusEffect(() => {
-  //   reset();
-  // })
 
   useLayoutEffect(() => {
     if(isEditing) {
@@ -77,6 +78,36 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
       setLoading(false);
     } 
   }, [route])
+
+  useEffect(() => {
+
+    const cep: string = getValues("cep");
+
+    if (cep && cep.length == 8) {
+
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(response => response.json())
+      .then(json => {
+        setEndereco(new Endereco(json.cep, json.logradouro, json.bairro, json.localidade, json.uf));
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    } else {
+      // Não faz nada
+    }
+  }, [watchCep])
+
+  useEffect(() => {
+    setValue("rua", endereco.rua);
+
+    setValue("bairro", endereco.bairro);
+
+    setValue("cidade", endereco.cidade);
+
+    setValue("UF", endereco.uf);
+
+  }, [ endereco ] )
 
   async function handlerRegister(data:FormDataProps){
     data.id = uuid.v4().toString();
@@ -177,10 +208,12 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
  
   }
 
+
+
 if (loading) return <ActivityIndicator size="large" color="#000fff"/>
   return (
     <KeyboardAwareScrollView>
-    <VStack bgColor="gray.300" flex={1} px={5} pb={100}>
+    <VStack bgColor="gray.300" flex={1} px={5} pb={5}>
         <Center>
             <Heading my={5}>
                 Cadastro de Competidores
@@ -242,12 +275,13 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
             name="cep"
             defaultValue=''
             render={({field: {onChange, value}})=>(
-            <Input
-              placeholder='CEP'
-              onChangeText={onChange}
-              errorMessage={errors.cep?.message}
-              value={value}
-            />
+              <Input
+                placeholder='CEP'
+                onChangeText={onChange}
+                errorMessage={errors.rua?.message}
+                value={value}
+                {...register("cep")}
+              />
             )}
           />
           <Controller 
@@ -260,6 +294,7 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
               onChangeText={onChange}
               errorMessage={errors.rua?.message}
               value={value}
+              {...register("rua")}
             />
             )}
           />
@@ -286,6 +321,7 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
               onChangeText={onChange}
               errorMessage={errors.bairro?.message}
               value={value}
+              {...register("bairro")}
             />
             )}
           />
@@ -299,6 +335,7 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
               onChangeText={onChange}
               errorMessage={errors.cidade?.message}
               value={value}
+              {...register("cidade")}
             />
             )}
           />
@@ -312,6 +349,7 @@ if (loading) return <ActivityIndicator size="large" color="#000fff"/>
               onChangeText={onChange}
               errorMessage={errors.UF?.message}
               value={value}
+              {...register("UF")}
             />
             )}
           />

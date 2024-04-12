@@ -15,26 +15,30 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 22,
+    width: '50%',
+    padding: 5,
   },
   nome: {
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 18,
     color: '#3D434D',
     fontWeight: 'bold',
   },
   email: {
     color: '#888D97',
-    fontSize: 13,
+    fontSize: 12,
+  },
+  telefone: {
+    color: '#888D97',
+    fontSize: 12,
+  },
+  cidade: {
+    color: '#888D97',
+    fontSize: 12,
   },
   user: {
     color: '#888D97',
     fontSize: 13,
-  },
-  password: {
-    color: '#1967FB',
-    fontSize: 15,
-    fontWeight: 'bold',
   },
   button: {
     height: 80,
