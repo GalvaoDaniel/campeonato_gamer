@@ -13,9 +13,6 @@ import { RootTabParamList } from '../../routes';
 import { DeleteItemDialog } from '../../components/deleteItemDialog';
 import { Button } from '../../components/button';
 import { Input } from '../../components/input';
-import { useFocusEffect } from '@react-navigation/native';
-import { SearchInput } from '../../components/searchInput';
-import { CepController } from '../../controller/cepController';
 import Endereco from '../../model/endereco';
 
 type FormDataProps = {

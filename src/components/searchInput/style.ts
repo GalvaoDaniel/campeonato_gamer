@@ -6,10 +6,13 @@ export const styles = StyleSheet.create({
     width: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderLeftWidth: 1,
-    borderLeftColor: '#E3E3E3',
+    backgroundColor: "#DFF5FF",
+    borderRadius: 10,
+    marginLeft: 5
   },
   view: {
-    flexDirection: "row"
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    marginTop: 100
   }
 });

@@ -5,7 +5,7 @@ import { styles } from "./style";
 
 type InputProps = IInputProps &{
     errorMessage?: string | null;
-    onPress: () => Promise<void>;
+    onPress: any;
 }
 export function SearchInput({errorMessage = null, isInvalid, onPress,  ...res}: InputProps ){
     const invalid = !!errorMessage || isInvalid;
@@ -37,7 +37,7 @@ export function SearchInput({errorMessage = null, isInvalid, onPress,  ...res}: 
                 >
                     <MaterialIcons
                     name="search"
-                    size={22}
+                    size={30}
                     color="#888D97"
                     />
                 </TouchableOpacity>
