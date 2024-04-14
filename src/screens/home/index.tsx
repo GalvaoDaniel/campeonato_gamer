@@ -23,19 +23,26 @@ export const Home = ({ navigation }: Props) => {
     const [data, setData] = useState<CardProps[]>([]);
     const [handledData, setHandledData] = useState<CardProps[]>([]);
 
+
+
     useFocusEffect(useCallback(() => {
         handlerFetchData()
     }, []))
+
+
 
     useEffect(() => {
         if (getValues("nome").length == 0) {
             setHandledData(data)
         }
-    }, [watch])
+    }, [watchCep])
     
+
+
     function handleEdit(id: string) {
         navigation.navigate('Competidor', {id: id})
     }
+
 
 
     async function handlerFetchData() {
@@ -50,18 +57,19 @@ export const Home = ({ navigation }: Props) => {
         }
     }
 
+
+
     const handleFilter = async () => {
         const nomePesquisa = getValues("nome");
-        console.log("Entrou");
-        console.log("handledData: " + handledData);
+
         if (nomePesquisa.length > 1) {
 
             setHandledData(data);
-            console.log("handledData 2 : " + handledData);
             const newHandledData = handledData.filter(
                 (competidor) => competidor.primeiroNome.includes(nomePesquisa)
             );
             setHandledData(newHandledData);
+
         } else if (nomePesquisa.length == 0) {
             setHandledData(data);
         }

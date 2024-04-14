@@ -14,6 +14,7 @@ import { DeleteItemDialog } from '../../components/deleteItemDialog';
 import { Button } from '../../components/button';
 import { Input } from '../../components/input';
 import Endereco from '../../model/endereco';
+import { getEnderecoDetails } from '../../controller/cepController';
 
 type FormDataProps = {
   id: any
@@ -57,6 +58,8 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isEditing = !!route?.params?.id;
 
+
+
   useLayoutEffect(() => {
     if(isEditing) {
       handlerSearcher(route.params.id)
@@ -68,6 +71,8 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     return () => setLoading(true);
   }, [route, isEditing])
 
+
+
   useLayoutEffect(() => {
     if (route?.params?.id) handlerSearcher(route.params.id)
     else {
@@ -76,26 +81,26 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     } 
   }, [route])
 
+
+
   useEffect(() => {
 
     const cep: string = getValues("cep");
 
     if (cep && cep.length == 8) {
 
-      fetch(`https://viacep.com.br/ws/${cep}/json/`)
-      .then(response => response.json())
-      .then(json => {
-        setEndereco(new Endereco(json.cep, json.logradouro, json.bairro, json.localidade, json.uf));
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    } else {
-      // Não faz nada
+      (async () => {
+        const { isOk, data, error } = await getEnderecoDetails(cep);
+        if (isOk) setEndereco(data);
+        else console.log(error);
+      })();
     }
   }, [watchCep])
 
+
+
   useEffect(() => {
+
     setValue("rua", endereco.rua);
 
     setValue("bairro", endereco.bairro);
@@ -106,9 +111,10 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
 
   }, [ endereco ] )
 
+
+
   async function handlerRegister(data:FormDataProps){
     data.id = uuid.v4().toString();
-    //console.log(data);
     try{
       const responseData =  await AsyncStorage.getItem('@crud_form:competidor')
       const dbData = responseData ? JSON.parse(responseData!) : [];
@@ -123,6 +129,8 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
       Toast.showSuccess("Erro ao registrar competidor "+e)
     }
   }
+
+
 
   async function handlerSearcher(id:string) {
     try{
@@ -146,6 +154,8 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
       console.log(error)
     }
   }
+
+
 
   async function handlerAlterRegister(data:FormDataProps){
     try{
@@ -174,10 +184,14 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
     }
   }
  
+
+
   async function navigateHome(){
     navigation.navigate('Home');
   }
 
+
+  
   async function handleDelete(data:FormDataProps){
     try{
       setLoading(true);

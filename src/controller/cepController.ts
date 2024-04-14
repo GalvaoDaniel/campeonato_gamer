@@ -1,26 +1,37 @@
 import Endereco from "../model/endereco";
 
+type EnderecoSuccessResponse = {
+    isOk: true;
+    data: Endereco;
+    error: null;
+  };
+  
+  type EnderecoErrorResponse = {
+    isOk: false;
+    data: null;
+    error: string;
+  };
+  
+  type EnderecoResponse =
+    | EnderecoSuccessResponse
+    | EnderecoErrorResponse;
 
-export class CepController {
-    static endereco?: Endereco;
+export const getEnderecoDetails = async ( cep:string ): Promise<EnderecoResponse> => {
+    try {
+      const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data: any = await resp.json();
 
-    static async fetchCep(cep: string): Promise<void> {
-        try {
-            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-            const data = await response.json();
-            if (!data.erro) {
-                this.endereco = new Endereco(data.cep, data.logradouro, data.bairro, data.localidade, data.uf);
-            } else {
-                console.log('Cep não encontrado');
-                this.endereco = undefined;
-            } 
-        } catch (error) {
-            console.error('Error fetching data: ', error);
-            this.endereco = undefined;
-        }
+      return {
+        isOk: true,
+        data: new Endereco(data.cep, data.logradouro, data.bairro, data.localidade, data.uf),
+        error: null,
+      };
+    } catch (e) {
+      console.log("Erro ao executar fetch da api de cep: " + e);
+      return {
+        isOk: false,
+        data: null,
+        error: (e as Error).message,
+      };
     }
-
-    static getEndereco() {
-        return this.endereco;
-    }
-}
+  };
