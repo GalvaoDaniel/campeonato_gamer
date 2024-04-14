@@ -85,7 +85,7 @@ export const Home = ({ navigation }: Props) => {
                     render={({field: {onChange, value}})=>(
                         <SearchInput 
                             variant="round" 
-                            placeholder="Pesquisar..." 
+                            placeholder="Pesquisar nome..." 
                             onPress={handleFilter} 
                             value={value} 
                             onChangeText={onChange} 
