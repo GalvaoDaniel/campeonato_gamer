@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { View, Text } from 'react-native';
 import { Home } from '../screens/home';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { Competidor } from '../screens/competidor';
