@@ -113,7 +113,7 @@ export const Competidor = ({route, navigation}: CompetidorRouteProp) => {
       const responseData =  await AsyncStorage.getItem('@crud_form:competidor')
       const dbData = responseData ? JSON.parse(responseData!) : [];
       console.log(dbData);
-      const previewData = [...dbData, data];
+      const previewData = [data, ...dbData];
 
       await AsyncStorage.setItem('@crud_form:competidor', JSON.stringify(previewData))
       reset();
